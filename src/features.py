@@ -34,7 +34,7 @@ def crear_features(df, t_base, subdiv):
 
     fest = holidays.Spain(years=df.index.year.unique(), subdiv=subdiv)
     fechas_festivas = pd.to_datetime(list(fest.keys()))
-    df["festivo"] = df.index.isin(fechas_festivas).astype(int)
+    df["festivo"] = ( (df.index.isin(fechas_festivas)) & (df.index.day_of_week<5)).astype(int) # festivo solo si cae en laborable (en finde ya lo recoge dia_semana)
     df["anio"] = df.index.year
     return df
 
