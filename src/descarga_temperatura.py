@@ -1,11 +1,21 @@
+"""Descarga la temperatura media diaria de Open-Meteo (reanálisis ERA5).
+
+Ni REData ni Open-Meteo dan una temperatura por sistema eléctrico, así que se
+descarga la de la capital de cada provincia (47 en la península, 3 islas en
+Baleares y las 2 capitales en Canarias). 
+Luego features.py las pondera por población para obtener una sola temperatura por sistema.
+
+Genera data/raw/temperatura_{sistema}.csv: una columna por ciudad.
+"""
+
 import time
-from pathlib import Path
 
 import pandas as pd
 import requests
 
-SALIDA = Path(__file__).resolve().parent.parent / "data" / "raw"
-URL="https://archive-api.open-meteo.com/v1/archive"
+from config import ANIO_FIN, ANIO_INICIO, DATOS_RAW
+
+URL = "https://archive-api.open-meteo.com/v1/archive"
 CIUDADES = {
     "peninsular": {
         # Andalucía
@@ -82,37 +92,33 @@ CIUDADES = {
     },
 }
 
+
 def descargar(lat, lon):
+    """Temperatura media diaria (°C) en un punto para todo el periodo."""
     params = {
-        "latitude":   lat,
-        "longitude":  lon,
-        "start_date": "2021-01-01",
-        "end_date":   "2025-12-31",
-        "daily":      "temperature_2m_mean",
-        "timezone":   "Europe/Madrid",
+        "latitude": lat,
+        "longitude": lon,
+        "start_date": f"{ANIO_INICIO}-01-01",
+        "end_date": f"{ANIO_FIN}-12-31",
+        "daily": "temperature_2m_mean",
+        "timezone": "Europe/Madrid",
     }
     resp = requests.get(URL, params=params, timeout=30)
-    if resp.status_code != 200:
-        print(f"Lat={lat}, Long={lon}")
-        print("Error", resp.status_code)
-        print(resp.text[:300])
-        raise SystemExit
-    datos = resp.json()
-    
-    df = pd.DataFrame(datos["daily"])
-    df["time"]=pd.to_datetime(df["time"])
-    df=df.rename(columns={"time": "fecha", "temperature_2m_mean": "temperatura" })
-    df = df[["fecha", "temperatura"]]
-    return df
+    resp.raise_for_status()
 
-# Lo que se ejecuta al lanzar el script
+    df = pd.DataFrame(resp.json()["daily"])
+    df["time"] = pd.to_datetime(df["time"])
+    df = df.rename(columns={"time": "fecha", "temperature_2m_mean": "temperatura"})
+    return df[["fecha", "temperatura"]]
+
+
 if __name__ == "__main__":
-    SALIDA.mkdir(parents=True, exist_ok=True)
+    DATOS_RAW.mkdir(parents=True, exist_ok=True)
     for sistema, ciudades in CIUDADES.items():
         columnas = {}
         for ciudad, (lat, lon) in ciudades.items():
-            time.sleep(1)
-            df_ciudad = descargar(lat, lon)
-            columnas[ciudad]=df_ciudad.set_index("fecha")["temperatura"]  
+            time.sleep(1)  # no saturar la API
+            columnas[ciudad] = descargar(lat, lon).set_index("fecha")["temperatura"]
         df = pd.concat(columnas, axis=1)
-        df.to_csv(SALIDA / f"temperatura_{sistema}.csv")
+        df.to_csv(DATOS_RAW / f"temperatura_{sistema}.csv")
+        print(f"{sistema}: {df.shape[1]} ciudades, {len(df)} días")
