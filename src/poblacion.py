@@ -1,7 +1,13 @@
-# Población a 1 de enero de 2023.
-# Fuente: INE, Cifras oficiales de población (Revisión del Padrón Municipal),
-# tablas "<Provincia>: Población por municipios y sexo".
-# Baleares por isla = suma de sus municipios; Formentera va con Ibiza.
+"""Población de cada provincia (o isla), para ponderar la temperatura de cada sistema.
+
+Población a 1 de enero de 2023. Fuente: INE, Cifras oficiales de población
+(Revisión del Padrón Municipal), tablas "<Provincia>: Población por municipios y sexo".
+Baleares por isla = suma de sus municipios; Formentera va con Ibiza.
+
+Las claves tienen que ser las mismas que las de CIUDADES en descarga_temperatura.py,
+porque features.py empareja cada temperatura con su población por nombre.
+"""
+
 POBLACION = {
     "peninsular": {
         # Andalucía

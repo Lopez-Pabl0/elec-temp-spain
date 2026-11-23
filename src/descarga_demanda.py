@@ -15,8 +15,9 @@ from config import ANIO_FIN, ANIO_INICIO, DATOS_RAW
 URL = "https://apidatos.ree.es/es/datos/demanda/evolucion"
 ZONAS = {
     "peninsular": 8741,
-    "canarias": 8742,
     "baleares": 8743,
+    "canarias": 8742,
+    
 }
 
 
@@ -36,7 +37,7 @@ def descargar(sistema, geo_id, anio):
     # Los valores diarios de la demanda están en included[0].attributes.values
     valores = resp.json()["included"][0]["attributes"]["values"]
     df = pd.DataFrame(valores)
-    df["fecha"] = pd.to_datetime(df["datetime"].str[:10])  # transformo en formato fecha de pandas y me quedo con YY-MM-DD
+    df["fecha"] = pd.to_datetime(df["datetime"].str[:10])  # transformo en formato fecha de pandas y me quedo con YYYY-MM-DD
     df = df.rename(columns={"value": "demanda_mwh"})
     return df[["fecha", "demanda_mwh"]]
 

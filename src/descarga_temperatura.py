@@ -1,8 +1,8 @@
 """Descarga la temperatura media diaria de Open-Meteo (reanálisis ERA5).
 
 Ni REData ni Open-Meteo dan una temperatura por sistema eléctrico, así que se
-descarga la de la capital de cada provincia (47 en la península, 3 islas en
-Baleares y las 2 capitales en Canarias). 
+descarga la de la capital de cada provincia (47 en la Península, 3 islas en
+Baleares y las 2 capitales en Canarias).
 Luego features.py las pondera por población para obtener una sola temperatura por sistema.
 
 Genera data/raw/temperatura_{sistema}.csv: una columna por ciudad.
