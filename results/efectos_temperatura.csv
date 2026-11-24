@@ -1,0 +1,4 @@
+sistema,hdd_%,hdd_ic_inf,hdd_ic_sup,cdd_%,cdd_ic_inf,cdd_ic_sup,hdd_medio_dia,cdd_medio_dia,peso_frio_%,peso_calor_%,peso_temperatura_%,r2,durbin_watson,maxlags
+peninsular,1.923,1.749,2.097,1.689,1.514,1.863,2.93,2.664,5.636,4.498,10.133,0.827,0.551,14
+baleares,3.532,3.03,4.033,5.18,4.805,5.555,1.287,4.086,4.546,21.168,25.714,0.893,0.425,35
+canarias,,,,1.256,0.979,1.533,0.015,4.402,0.0,5.528,5.528,0.778,0.238,80

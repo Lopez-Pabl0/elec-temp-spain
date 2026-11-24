@@ -3,6 +3,4 @@ __pycache__/
 .ipynb_checkpoints/
 *.db
 
-# mientras trabajo: datos descargados y resultados generados
-data/
-results/
+
